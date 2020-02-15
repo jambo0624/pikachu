@@ -1,18 +1,40 @@
 !function () {
+  let duration = 50
+  $('.actions').on('click', 'button', function (e) {
+    let $button = $(e.currentTarget)
+    let speed = $button.attr('data-speed')
+    $button.addClass('active').siblings().removeClass('active')
+    switch (speed) {
+      case 'slow':
+        duration = 90
+        break;
+      case 'normal':
+        duration = 50
+        break;
+      case 'fast':
+        duration = 10
+        break
+      default:
+        break;
+    }
+
+  })
   function writeCode(prefix,code,fn) {
     let container = document.querySelector('#code')
     let styleTag = document.querySelector('#styleTag')
     let n = 0
-    let timer = setInterval(() => {
+    let timer 
+    timer = setTimeout(function run(){
       n++
       container.innerHTML = Prism.highlight(code.substring(0, n), Prism.languages.css)
       styleTag.innerHTML = code.substring(0,n)
       container.scrollTop = container.scrollHeight
-      if (n>=code.length){
-        window.clearInterval(timer)
+      if (n < code.length){
+        timer = setTimeout(run,duration)
+      }else {
         fn && fn.call()
       }
-    }, 10);
+    }, 50);
   }
 
   let code = `
@@ -180,4 +202,5 @@
    */
   `
   writeCode('', code)
+  
 }.call()
